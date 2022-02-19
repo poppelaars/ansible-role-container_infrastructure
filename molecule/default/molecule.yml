@@ -1,0 +1,16 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  - name: instance
+    box: "${MOLECULE_DISTRO:-generic/rocky8}"
+    memory: 2048
+    cpus: 2
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+verifier:
+  name: testinfra

@@ -1,0 +1,32 @@
+---
+galaxy_info:
+  namespace: poppelaars
+  role_name: container_infrastructure
+  author: poppelaars
+  description: Prepares infrastructure to run container runtime software as non-root.
+  company: N/A
+
+  license: license (MIT)
+
+  min_ansible_version: 2.1
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+    - name: Ubuntu
+      versions:
+        - focal
+
+  galaxy_tags:
+    - container
+    - infrastructure
+    - nonroot
+    - server
+    - system
+
+dependencies: []

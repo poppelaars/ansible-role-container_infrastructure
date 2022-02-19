@@ -1,0 +1,9 @@
+---
+
+- name: "Create /opt/{{ application_username }} directory."
+  ansible.builtin.file:
+    path: "/opt/{{ application_username }}"
+    state: directory
+    owner: "{{ application_username }}"
+    group: "{{ application_username }}"
+    mode: '0750'

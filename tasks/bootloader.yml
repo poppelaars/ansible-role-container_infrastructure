@@ -1,0 +1,47 @@
+---
+
+- name: Configure bootloader on Debian based systems.
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/default/grub
+    backrefs: true
+    regexp: '^(GRUB_CMDLINE_LINUX=(?:(?![" ]{{ item.option | regex_escape }}=).)*)(?:[" ]{{ item.option | regex_escape }}=\S+)?(.*")$'
+    line: '\1 {{ item.option }}={{ item.value }}\2'
+  with_items:
+    - {option: "cgroup_enable", value: "memory"}
+    - {option: "cgroup.memory", value: "nokmem"}
+    - {option: "swapaccount", value: "1"}
+    - {option: "systemd.unified_cgroup_hierarchy", value: "1"}
+  notify:
+    - update grub
+  when: ansible_os_family == 'Debian'
+
+- name: Configure bootloader on RedHat based systems.
+  block:
+    - name: Check if bootloader is configured on RedHat based systems.
+      ansible.builtin.lineinfile:
+        backup: true
+        path: /etc/default/grub
+        regexp: "^GRUB_CMDLINE_LINUX=\".*{{ item }}.*\"$"
+        state: absent
+      check_mode: true
+      register: redhat_bootloader_check
+      changed_when: false
+      with_items:
+        - 'cgroup_enable=memory'
+        - 'cgroup\.memory=nokmem'
+        - 'swapaccount=1'
+        - 'systemd\.unified_cgroup_hierarchy=1'
+
+    - name: Update the bootloader on RedHat based systems.
+      ansible.builtin.shell: |
+        grubby --update-kernel=ALL \
+        --args="\
+        cgroup_enable=memory \
+        cgroup.memory=nokmem \
+        swapaccount=1 \
+        systemd.unified_cgroup_hierarchy=1"
+      when: 0 in redhat_bootloader_check.results | map(attribute='found') | list
+      notify:
+        - reboot machine
+  when: ansible_os_family == 'RedHat'

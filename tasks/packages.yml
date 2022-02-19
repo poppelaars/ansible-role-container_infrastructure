@@ -1,0 +1,27 @@
+---
+
+- name: Install packages on Debian based systems.
+  ansible.builtin.apt:
+    name:
+      - 'apt-transport-https'
+      - 'acl'
+      - 'ca-certificates'
+      - 'curl'
+      - 'dbus-user-session'
+      - 'fuse-overlayfs'
+      - 'iptables'
+      - 'lvm2'
+      - 'uidmap'
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install packages on RedHat based systems.
+  ansible.builtin.package:
+    name:
+      - 'dbus-daemon'
+      - 'fuse-overlayfs'
+      - 'iptables'
+      - 'lvm2'
+      - 'shadow-utils'
+    state: present
+  when: ansible_os_family == 'RedHat'

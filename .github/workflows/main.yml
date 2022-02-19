@@ -1,0 +1,81 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 7 * * 0"
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code.
+        uses: actions/checkout@v2
+
+      - name: Setup Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install requirements.
+        run: pip3 install yamllint
+
+      - name: Running yamllint.
+        run: |
+          yamllint . -f parsable
+
+  molecule:
+    runs-on: macos-10.15
+    needs: lint
+    strategy:
+      matrix:
+        include:
+          - distro: generic/rocky8
+          - distro: generic/debian11
+          - distro: generic/debian10
+          - distro: generic/ubuntu2004
+    steps:
+      - name: Checkout code.
+        uses: actions/checkout@v2
+
+      - name: Setup Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install requirements and run tests with Ansible Molecule.
+        run: |
+          pip3 install virtualenv
+          virtualenv -p python3 --clear venv
+          source ./venv/bin/activate;
+          pip3 install -r ./requirements.txt;
+          molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: molecule
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible.
+        run: pip3 install ansible-core
+
+      - name: Trigger a new import on Ansible Galaxy.
+        run: >-
+          ansible-galaxy role import --api-key ${{ secrets.ANSIBLE_GALAXY_API_KEY }}
+          $(echo ${{ github.repository }} | cut -d/ -f1) $(echo ${{ github.repository }} | cut -d/ -f2)

@@ -1,0 +1,22 @@
+---
+
+- name: Include tasks for configuring users.
+  include_tasks: users.yml
+
+- name: Include tasks for configuring filesystems.
+  include_tasks: filesystems.yml
+
+- name: Include tasks for configuring packages.
+  include_tasks: packages.yml
+
+- name: Include tasks for configuring kernel parameters.
+  include_tasks: kernel_parameters.yml
+
+- name: Include tasks for configuring kernel modules.
+  include_tasks: kernel_modules.yml
+
+- name: Include tasks for configuring services.
+  include_tasks: services.yml
+
+- name: Include tasks for configuring bootloader.
+  include_tasks: bootloader.yml

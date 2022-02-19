@@ -1,0 +1,15 @@
+---
+
+- name: Add the user '{{ application_username }}' with a bash shell.
+  ansible.builtin.user:
+    name: "{{ application_username }}"
+    shell: /bin/bash
+
+- name: Check that the user lingering is enabled for the user '{{ application_username }}'.
+  stat:
+    path: "/var/lib/systemd/linger/{{ application_username }}"
+  register: stat_result
+
+- name: Enable user lingering for the user '{{ application_username }}'.
+  command: "loginctl enable-linger {{ application_username }}"
+  when: not stat_result.stat.exists

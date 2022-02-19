@@ -1,0 +1,15 @@
+---
+
+- name: reload sysctl
+  ansible.builtin.shell: sysctl --system
+
+- name: update grub
+  ansible.builtin.shell: update-grub2
+  notify: reboot machine
+
+- name: reboot machine
+  ansible.builtin.reboot:
+
+- name: systemd daemon_reload
+  ansible.builtin.systemd:
+    daemon_reload: true

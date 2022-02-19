@@ -1,0 +1,6 @@
+---
+
+- name: Configure kernel modules.
+  ansible.builtin.copy:
+    src: modules.conf
+    dest: "/etc/modules-load.d/{{ application_username }}.conf"
