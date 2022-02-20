@@ -78,7 +78,8 @@ def test_kernel_modules(host):
     assert file.content_string == """br_netfilter
 ip_conntrack
 ip_tables
-overlay"""
+overlay
+"""
 
 
 def test_services(host):
