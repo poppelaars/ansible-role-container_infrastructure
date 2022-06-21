@@ -1,10 +1,10 @@
 ---
 
 - name: reload sysctl
-  ansible.builtin.shell: sysctl --system
+  ansible.builtin.command: sysctl --system
 
 - name: update grub
-  ansible.builtin.shell: update-grub2
+  ansible.builtin.command: update-grub2
   notify: reboot machine
 
 - name: reboot machine

@@ -1,0 +1,8 @@
+---
+
+exclude_paths:
+  - .cache/
+  - .github/
+  - env/
+  - venv/
+  - __pycache__/

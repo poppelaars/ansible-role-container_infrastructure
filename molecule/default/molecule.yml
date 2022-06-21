@@ -12,5 +12,10 @@ provisioner:
   name: ansible
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+lint: |
+  set -e
+  yamllint . -f parsable
+  ansible-lint
+  flake8
 verifier:
   name: testinfra

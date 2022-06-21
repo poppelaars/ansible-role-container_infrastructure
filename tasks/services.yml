@@ -1,42 +1,47 @@
 ---
 
-- name: Create systemd delegation directory.
-  file:
-    path: /etc/systemd/system/user@.service.d
-    state: directory
+- name: "Create systemd delegation directory."
+  ansible.builtin.file:
+    path: "/etc/systemd/system/user@.service.d"
+    state: "directory"
+    mode: "0755"
 
-- name: Copy systemd delegation config.
+- name: "Copy systemd delegation config."
   ansible.builtin.copy:
-    src: delegate.conf
-    dest: /etc/systemd/system/user@.service.d/delegate.conf
+    src: "delegate.conf"
+    dest: "/etc/systemd/system/user@.service.d/delegate.conf"
+    mode: "0644"
   notify:
-    - systemd daemon_reload
+    - "systemd daemon_reload"
 
 
 # Workaround for systemd version 239
 # https://unix.stackexchange.com/questions/624428/cgroups-v2-cgroup-controllers-not-delegated-to-non-privileged-users-on-centos-s
-- name: Get package facts.
-  package_facts:
+- name: "Get package facts."
+  ansible.builtin.package_facts:
     manager: "auto"
 
-- name: Configure workaround for systemd version 239 on RedHat based systems.
+- name: "Configure workaround for systemd version 239 on RedHat based systems."
   block:
-    - name: Copy user-0.slice config.
+    - name: "Copy user-0.slice config."
       ansible.builtin.copy:
-        src: user0.slice
-        dest: /etc/systemd/system/user-0.slice
+        src: "user0.slice"
+        dest: "/etc/systemd/system/user-0.slice"
+        mode: "0644"
       notify:
-        - systemd daemon_reload
+        - "systemd daemon_reload"
 
-    - name: Create systemd delegation directory.
-      file:
-        path: /etc/systemd/system/user-.slice.d
-        state: directory
+    - name: "Create systemd delegation directory."
+      ansible.builtin.file:
+        path: "/etc/systemd/system/user-.slice.d"
+        state: "directory"
+        mode: "0755"
 
-    - name: Copy user slice override config.
+    - name: "Copy user slice override config."
       ansible.builtin.copy:
-        src: user_slice_override.conf
-        dest: /etc/systemd/system/user-.slice.d/override.conf
+        src: "user_slice_override.conf"
+        dest: "/etc/systemd/system/user-.slice.d/override.conf"
+        mode: "0644"
       notify:
-        - systemd daemon_reload
+        - "systemd daemon_reload"
   when: ansible_facts.packages.systemd[0].version | regex_replace('^(\\d+).*$', '\\1') | int < 240

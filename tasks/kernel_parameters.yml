@@ -1,8 +1,9 @@
 ---
 
-- name: Configure kernel parameters.
+- name: "Configure kernel parameters."
   ansible.builtin.copy:
-    src: sysctl.conf
+    src: "sysctl.conf"
     dest: "/etc/sysctl.d/50-{{ application_username }}.conf"
+    mode: "0644"
   notify:
-    - reload sysctl
+    - "reload sysctl"

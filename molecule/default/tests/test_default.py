@@ -51,9 +51,9 @@ def test_kernel_parameters(host):
     print(host.system_info.distribution)
     if host.system_info.distribution in ["debian", "ubuntu"]:
         assert host.sysctl("kernel.unprivileged_userns_clone") == 1
-    #elif host.system_info.distribution in ["centos", "redhat", "rocky"]:
+    # elif host.system_info.distribution in ["centos", "redhat", "rocky"]:
         # sysctl: cannot stat /proc/sys/fs/may_detach_mounts: No such file or directory
-        #assert host.sysctl("fs.may_detach_mounts") == 1
+        # assert host.sysctl("fs.may_detach_mounts") == 1
 
     assert host.sysctl("net.bridge.bridge-nf-call-iptables") == 1
     assert host.sysctl("net.bridge.bridge-nf-call-ip6tables") == 1
@@ -137,4 +137,3 @@ def test_bootloader(host):
         assert "cgroup.memory=nokmem" in grub.content_string
         assert "swapaccount=1" in grub.content_string
         assert "systemd.unified_cgroup_hierarchy=1" in grub.content_string
-

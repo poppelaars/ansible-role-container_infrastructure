@@ -13,6 +13,7 @@
       - 'lvm2'
       - 'uidmap'
     state: present
+    update_cache: true
   when: ansible_os_family == 'Debian'
 
 - name: Install packages on RedHat based systems.
