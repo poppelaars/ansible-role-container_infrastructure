@@ -19,6 +19,7 @@ jobs:
           - distro: generic/debian11
           - distro: generic/debian10
           - distro: generic/ubuntu2004
+          - distro: generic/ubuntu2204
     steps:
       - name: Checkout code.
         uses: actions/checkout@v2
