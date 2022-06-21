@@ -9,27 +9,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code.
-        uses: actions/checkout@v2
-
-      - name: Setup Python 3.
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install requirements.
-        run: pip3 install yamllint
-
-      - name: Running yamllint.
-        run: |
-          yamllint . -f parsable
 
   molecule:
     runs-on: macos-10.15
-    needs: lint
     strategy:
       matrix:
         include:
